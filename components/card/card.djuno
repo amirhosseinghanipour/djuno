@@ -1,0 +1,23 @@
+--- template ---
+<div class="{{ id }} {{ class }}">
+    {% slot header %}
+        {% if title %}<h2 class="text-lg font-bold">{{ title }}</h2>{% endif %}
+    {% endslot %}
+    {% slot content %}
+        {{ content }}
+    {% endslot %}
+    {% slot footer %}
+        {% if footer %}<div class="text-sm text-gray-500">{{ footer }}</div>{% endif %}
+    {% endslot %}
+</div>
+
+--- styles ---
+.{{ id }}.default { @apply bg-white shadow rounded-lg p-4; }
+.{{ id }}.bordered { @apply border border-gray-200; }
+
+--- scripts ---
+{% if js == "alpine" %}
+document.addEventListener('alpine:init', () => {
+    Alpine.data('card', () => ({}));
+});
+{% endif %}
