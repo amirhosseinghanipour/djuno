@@ -19,21 +19,21 @@ def init():
     Path('tests').mkdir(exist_ok=True)
     subprocess.run(['npm', 'install', '-D', 'tailwindcss', 'esbuild'])
     with open('package.json', 'w') as f:
-        f.write('{"scripts": {"build": "esbuild components/*.djuno --bundle --outdir=static/components --loader:.djuno=css"}}')
+        f.write('{"scripts": {"build": "esbuild components/*/*.djuno --bundle --outdir=static/components --loader:.djuno=css"}}')
     click.echo("Djuno initialized! Run `npm run build` to bundle assets.")
 
 
 @cli.command()
 @click.argument('name')
 @click.option('--js', default='none', type=click.Choice(['none', 'alpine', 'htmx']), prompt='JavaScript framework?')
-def add(name):
+def add(name, js):
     """Generate a new component."""
     component_dir = Path('components') / name
     component_dir.mkdir(exist_ok=True)
     djuno_file = component_dir / f"{name}.djuno"
     py_file = component_dir / f"{name}.py"
 
-    djuno_content = f"""
+    djuno_content = f"""\
 --- template ---
 <div class="{{{{ id }}}} {{{{ class }}}}" {{{{ js_attrs }}}}
     {{% slot content %}}
@@ -45,14 +45,14 @@ def add(name):
 .{{{{ id }}}}.default {{ @apply bg-gray-100 p-4; }}
 
 --- scripts ---
-{ % if js == "alpine" % }
+{{% if js == "alpine" %}}
 document.addEventListener('alpine:init', () => {{
     Alpine.data('{name}', () => ({{}}));
 }});
-{ % endif % }
+{{% endif %}}
 """
 
-    py_content = f"""
+    py_content = f"""\
 from djuno.component import Component, Prop, register_component, parse_djuno_file
 from django.conf import settings
 import os
