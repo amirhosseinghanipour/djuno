@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["components/**/*.{js,ts}", "djuno/vite/**/*.{js,ts}", ".storybook/**/*.{js,ts}"]
+}

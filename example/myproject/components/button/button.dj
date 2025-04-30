@@ -1,0 +1,67 @@
+<template>
+  <button
+    class="{{ class }} default"
+    {{ js_attrs }}
+    {% if id %}id="{{ id }}"{% endif %}
+    {% if disabled %}disabled{% endif %}
+  >
+    {% if icon %}
+      <span class="mr-2">{{ icon }}</span>
+    {% endif %}
+    <slot name="header"></slot>
+    <slot>{{ text }}</slot>
+    <slot name="footer"></slot>
+  </button>
+</template>
+
+<style scoped>
+  .default {
+    background-color: #f0f0f0;
+    padding: 1rem;
+    border-radius: 0.25rem;
+    transition: background-color 0.2s;
+    display: flex;
+    align-items: center;
+  }
+  .default:hover {
+    background-color: #e0e0e0;
+  }
+  .disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+</style>
+
+<script lang="ts">
+  /**
+   * A customizable button component with named slots and icons.
+   * @example <button_component text="Click Me"><template slot="header"><icon_component name="star" /></template></button_component>
+   */
+  export default {
+    name: '{{ name }}',
+    props: {
+      id: { type: String as () => string | null, default: null },
+      text: { type: String as () => string, default: 'Click Me', required: true },
+      class: { type: String as () => string, default: 'default' },
+      js: { type: String as () => 'none' | 'alpine' | 'htmx', default: 'none' },
+      disabled: { type: Boolean as () => boolean, default: false },
+      icon: { type: String as () => string | null, default: null }
+    },
+    data(): { isClicked: boolean } {
+      return {
+        isClicked: false
+      };
+    },
+    computed: {
+      js_attrs(): string {
+        if (this.js === 'alpine') {
+          return `x-data="{ isClicked: ${this.isClicked} }" @click="isClicked = !isClicked" :class="{ 'bg-blue-500 text-white': isClicked }"`;
+        }
+        if (this.js === 'htmx') {
+          return 'hx-post="/toggle/" hx-swap="outerHTML"';
+        }
+        return '';
+      }
+    }
+  };
+</script>
